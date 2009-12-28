@@ -2,7 +2,7 @@ A simple but awesome couchdb client based on EventMachine.
 
 Example:
 
-<pre>require "rubygems"
+require "rubygems"
 require "eventmachine"
 require "../lib/em-couchdb"
 
@@ -18,4 +18,3 @@ EventMachine.run {
     end
   end
 }
-</pre>

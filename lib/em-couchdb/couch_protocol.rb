@@ -14,7 +14,6 @@ module EventMachine
       def initialize(connection_params)
         @host = connection_params[:host] || '127.0.0.1'
         @port = connection_params[:port] || 80
-        @database = connection_params[:database]
         @timeout = connection_params[:timeout] || 10
       end
       def get_all_dbs(&callback)
@@ -26,8 +25,39 @@ module EventMachine
           raise "CouchDB Exception. Unable to get all dbs"
         }
       end
-      def get(id, &callback)
-        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{@database}/#{id}").get :timeout => @timeout 
+      def create_db(db_name, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").put 
+        if block_given?
+          http.callback {
+            callback.call()
+          }
+        end
+        http.errback {
+          raise "CouchDB Exception. Unable to create db"
+        }
+      end
+      def get_db(db_name, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").get :timeout => @timeout
+        http.callback {
+          callback.call(JSON.load(http.response))
+        }
+        http.errback {
+          raise "CouchDB Exception. Unable to get db"
+        }
+      end
+      def delete_db(db_name, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").delete 
+        if block_given?
+          http.callback {
+            callback.call()
+          }
+        end
+        http.errback {
+          raise "CouchDB Exception. Unable to delete db"
+        }
+      end
+      def get(database, id, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/#{id}").get :timeout => @timeout 
         http.callback {
           callback.call(JSON.load(http.response))
         }
@@ -35,8 +65,8 @@ module EventMachine
           raise "CouchDB Exception. Unable to get document"
         }
       end
-      def save(doc, &callback)
-        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{@database}/").post :body => JSON.dump(doc)
+      def save(database, doc, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/").post :body => JSON.dump(doc)
         http.callback {
           callback.call(JSON.load(http.response))
         }
@@ -44,9 +74,9 @@ module EventMachine
           raise "CouchDB Exception. Unable to save document"
         }
       end
-      def delete(doc, &callback)
+      def delete(database, doc, &callback)
         doc_id, doc_revision = get_revision_and_id(doc)
-        http = EventMachine::HttpRequest.new(URI.parse("http://#{@host}:#{@port}/#{@database}/#{doc_id}?rev=#{doc_revision}")).delete
+        http = EventMachine::HttpRequest.new(URI.parse("http://#{@host}:#{@port}/#{database}/#{doc_id}?rev=#{doc_revision}")).delete
         http.callback{
           callback.call
         }

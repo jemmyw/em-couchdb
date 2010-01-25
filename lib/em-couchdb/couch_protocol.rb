@@ -22,7 +22,7 @@ module EventMachine
           callback.call(JSON.load(http.response))
         }
         http.errback {
-          raise "CouchDB Exception. Unable to get all dbs"
+          raise "CouchDB Exception. Unable to get all dbs. #{http.errors.join('\n')}"
         }
       end
       def create_db(db_name, &callback)
@@ -74,8 +74,20 @@ module EventMachine
           raise "CouchDB Exception. Unable to save document"
         }
       end
+      def update(database, old_doc, new_doc, &callback)
+        id, rev = get_id_and_revision(old_doc)
+        new_doc["_rev"] = rev
+        new_doc["_id"] = id
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/#{id}").put :body => JSON.dump(new_doc)
+        http.callback {
+          callback.call(JSON.load(http.response))
+        }
+        http.errback {
+          raise "CouchDB Exception. Unable to save document"
+        }
+      end
       def delete(database, doc, &callback)
-        doc_id, doc_revision = get_revision_and_id(doc)
+        doc_id, doc_revision = get_id_and_revision(doc)
         http = EventMachine::HttpRequest.new(URI.parse("http://#{@host}:#{@port}/#{database}/#{doc_id}?rev=#{doc_revision}")).delete
         http.callback{
           callback.call
@@ -84,7 +96,7 @@ module EventMachine
           raise "CouchDB Exception. Unable to delete document"
         }
       end
-      def get_revision_and_id(doc)
+      def get_id_and_revision(doc)
         if doc.has_key? "_id"
           return doc["_id"], doc["_rev"]
         else

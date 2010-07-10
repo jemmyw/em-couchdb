@@ -12,6 +12,7 @@ Contributors
 ------------
 
 - Sai Venkatakrishnan (http://www.github.com/saivenkat)
+- Justin Langhorst (http://www.github.com/langhorst)
 
 Requirements
 ------------

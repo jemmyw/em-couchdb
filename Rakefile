@@ -7,7 +7,7 @@ require 'rake/rdoctask'
 require 'rake/testtask'
 
 PACKAGE_NAME = 'EM-CouchDB'
-PACKAGE_VERSION = EMCouchDB::VERSION
+PACKAGE_VERSION = EMCouchDB.version
 
 task :default => :test
 

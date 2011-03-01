@@ -66,7 +66,7 @@ module EventMachine
         }
       end
       def save(database, doc, &callback)
-        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/").post :body => JSON.dump(doc)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/").post :body => JSON.dump(doc), :head => {"Content-Type" => "application/json"}
         http.callback {
           callback.call(JSON.load(http.response))
         }

@@ -16,6 +16,9 @@ module EventMachine
         @port = connection_params[:port] || 80
         @timeout = connection_params[:timeout] || 10
       end
+
+      # DB API
+
       def get_all_dbs(&callback)
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/_all_dbs/").get :timeout => @timeout 
         http.callback {
@@ -25,6 +28,7 @@ module EventMachine
           raise "CouchDB Exception. Unable to get all dbs. #{http.errors.join('\n')}"
         }
       end
+
       def create_db(db_name, &callback)
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").put 
         if block_given?
@@ -36,6 +40,7 @@ module EventMachine
           raise "CouchDB Exception. Unable to create db"
         }
       end
+      
       def get_db(db_name, &callback)
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").get :timeout => @timeout
         http.callback {
@@ -45,6 +50,7 @@ module EventMachine
           raise "CouchDB Exception. Unable to get db"
         }
       end
+      
       def delete_db(db_name, &callback)
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/").delete 
         if block_given?
@@ -56,6 +62,21 @@ module EventMachine
           raise "CouchDB Exception. Unable to delete db"
         }
       end
+      
+      def compact(db_name, &callback)
+        http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{db_name}/_compact").post :head => {"Content-Type" => "application/json"}
+        if block_given?
+          http.callback {
+            callback.call()
+          }
+        end
+        http.errback {
+          raise "CouchDB Exception. Unable to compact db"
+        }
+      end
+
+      # Document API
+
       def get(database, id, &callback)
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}/#{database}/#{id}").get :timeout => @timeout 
         http.callback {

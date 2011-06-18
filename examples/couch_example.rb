@@ -9,7 +9,7 @@ require "../lib/em-couchdb"
 describe "Working with Databases" do
   it "return databases available in couchdb" do
     EventMachine.run do
-      couch = EventMachine::Protocols::CouchDB.connect :host => 'localhost', :port => 5984
+      couch = EventMachine::CouchDB.connect :host => 'localhost', :port => 5984
       couch.create_db("test-project")
       couch.get_all_dbs {|dbs| dbs.should include "test-project"}
       couch.get_db("test-project") do |db|
@@ -25,7 +25,7 @@ end
 describe "Working with documents" do
   it "should get the saved document" do
     EventMachine.run do
-      couch = EventMachine::Protocols::CouchDB.connect :host => 'localhost', :port => 5984
+      couch = EventMachine::CouchDB.connect :host => 'localhost', :port => 5984
       couch.create_db("test-project")
       couch.get_db("test-project") do |db|
         couch.save(db["db_name"], {:name => "couchdb", "description" => "awesome"}) do |doc| 

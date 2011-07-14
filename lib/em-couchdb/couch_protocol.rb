@@ -17,12 +17,13 @@ module EventMachine
         @host = connection_params[:host] || '127.0.0.1'
         @port = connection_params[:port] || 5984
         @timeout = connection_params[:timeout] || 10
+        @verbose = connection_params[:verbose] || false
 
         yield self if block_given?
       end
 
       def command(path, method, options = {}, head = {"Content-Type" => "application/json"}, &callback)
-        Command.new(@host, @port, path, method, options, head, &callback)
+        Command.new(@host, @port, path, method, options.merge(:verbose => @verbose), head, &callback)
       end
 
       # DB API

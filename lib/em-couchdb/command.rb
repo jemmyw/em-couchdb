@@ -16,6 +16,7 @@ module EventMachine
         @method = method
         @options = options
         @body = @options.delete(:body)
+        @verbose = @options.delete(:verbose)
         @headers = headers
 
         if block_given?
@@ -25,15 +26,27 @@ module EventMachine
         execute
       end
 
+      def verbose?
+        @verbose
+      end
+
       def execute
         options = {:timeout => 10}.merge(@options)
         options[:body] = @body.respond_to?(:read) ? @body.read : @body
         options[:head] = @headers.dup
         options[:head]['Content-Length'] = options[:body].length if options[:body].respond_to?(:length)
 
+        if verbose?
+          puts "#{@method} http://#{@host}:#{@port}#{@path}"
+        end
+
         http = EventMachine::HttpRequest.new("http://#{@host}:#{@port}#{@path}").send(@method, options)
 
         http.callback do
+          if verbose?
+            puts "-> #{http.response_header.status}"
+          end
+
           unless (200..399).include?(http.response_header.status.to_i)
             begin
               self.fail JSON.load(http.response)['error']

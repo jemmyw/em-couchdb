@@ -13,8 +13,8 @@ END_DESC
   spec.requirements << 'CouchDB 0.8.0 and upwards'
   
   spec.add_dependency('json', '>= 1.4.3')
-  spec.add_dependency('eventmachine', '>= 0.12.10')
-  spec.add_dependency('em-http-request', '>= 0.2.10')
+  spec.add_dependency('eventmachine', '>= 1.0.0.beta.4')
+  spec.add_dependency('em-http-request', '>= 1.0.2')
  
   spec.files = Dir['lib/**/*.rb'] + Dir['examples/**/*.rb'] + ['README.rdoc']
   spec.test_files = Dir['test/**/*.rb']

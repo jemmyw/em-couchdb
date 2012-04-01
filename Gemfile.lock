@@ -1,24 +1,29 @@
 PATH
   remote: .
   specs:
-    em-couchdb (0.0.1)
-      em-http-request (>= 0.2.10)
-      eventmachine (>= 0.12.10)
+    em-couchdb (0.0.2)
+      em-http-request (>= 1.0.2)
+      eventmachine (>= 1.0.0.beta.4)
       json (>= 1.4.3)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    addressable (2.2.6)
+    addressable (2.2.7)
     archive-tar-minitar (0.5.2)
     columnize (0.3.3)
-    em-http-request (0.3.0)
-      addressable (>= 2.0.0)
-      escape_utils
-      eventmachine (>= 0.12.9)
-    escape_utils (0.2.3)
-    eventmachine (0.12.10)
-    json (1.5.1)
+    cookiejar (0.3.0)
+    em-http-request (1.0.2)
+      addressable (>= 2.2.3)
+      cookiejar
+      em-socksify
+      eventmachine (>= 1.0.0.beta.4)
+      http_parser.rb (>= 0.5.3)
+    em-socksify (0.2.0)
+      eventmachine (>= 1.0.0.beta.4)
+    eventmachine (1.0.0.beta.4)
+    http_parser.rb (0.5.3)
+    json (1.6.6)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     ruby-debug-base19 (0.11.25)

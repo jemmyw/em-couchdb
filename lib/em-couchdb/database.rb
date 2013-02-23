@@ -68,7 +68,7 @@ module EventMachine
           doc.build_view(view_name, mapjs, reducejs)
           cm = doc.save
           cm.callback { df.succeed }
-          cm.errback  { df.fail "error creating view" }
+          cm.errback  {|*args| df.fail(*args) }
         end
 
         create_doc = proc do

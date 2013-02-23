@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name = "em-couchdb"
-  spec.version = "0.0.2"
+  spec.version = "0.0.3"
   spec.platform = Gem::Platform::RUBY
   spec.summary = 'A non-blocking EventMachine client protocol for CouchDB'
   spec.description = <<END_DESC
